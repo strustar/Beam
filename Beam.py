@@ -17,42 +17,14 @@ st.set_page_config(page_title = "Beam Design (FRP vs. Rebar)", page_icon = "beam
                     })
 ### * -- Set page config
 
-css_intro = """
-<style>
-    .boxed {
-        border: 3px solid blue;
-        border-radius: 100px;
-        padding: 20px;
-        padding-left: 30px;
-        margin: 20px;
-        margin-left: -30px;
-        margin-right: 0px;
-        margin-top: 30px;
-        margin-bottom: 0px;
-        font-size: 22px;
-        # line-height: 1.5;
-        background-color: yellow;
-        color: black;
-        width: 515px;
-        # height: 100px;
-    }
-    .small {
-        color: green;
-        padding: 10px;
-        font-size: 16px;
-        display: inline-block;
-        # text-decoration: underline;
-        # line-height: 1.2;
-    }
-</style>
-"""
 
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
+max_width=1800
 css = f""" <style>
     .block-container {{
         margin-top: 20px;
         padding-top: 0px;
-        max-width: 1000px !important;
+        max-width: {max_width}px !important;
     }}
     .element-container {{
             white-space: nowrap;            
@@ -139,3 +111,48 @@ style.radio(In.background_color, '32%')
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 
 In = Sidebar.Sidebar(h4, h5)
+
+
+
+import plotly.graph_objects as go
+
+fig = go.Figure()  # Create a blank figure
+max_width = 1800  ########
+height = 600
+
+# Add a rectangle shape
+fig.add_shape(
+    type="rect",
+    # xref='x', yref='y',
+    x0=0, y0=0, x1=max_width, y1=height,
+    line=dict(
+        color="RoyalBlue",
+        width=3,
+    ),
+    fillcolor='yellow'
+)
+fig.add_shape(
+    type="circle",
+    xref='x', yref='y',
+    x0=100, y0=100, x1=200, y1=200,
+    line=dict(
+        color="RoyalBlue",
+        width=2,
+    ),
+    fillcolor='cyan'
+)
+
+# Update the layout properties
+# fig.update_layout(
+#     autosize=False,
+#     width=max_width,
+#     height=height,
+# )
+
+fig.update_xaxes(range=[0, max_width], autorange=False, scaleanchor='y')
+fig.update_yaxes(range=[0, height],  autorange=False)
+# fig.update_xaxes(visible=False)
+# fig.update_yaxes(visible=False)
+
+st.plotly_chart(fig, use_container_width=True)
+
