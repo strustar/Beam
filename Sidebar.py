@@ -1,4 +1,5 @@
 import streamlit as st
+import numpy as np
 # import re
 sb = st.sidebar
 
@@ -9,7 +10,7 @@ In.ok = ':blue[∴ OK] (🆗✅)';  In.ng = ':red[∴ NG] (❌)'
 In.space = '<div style="margin:0px">'
 In.background_color = 'linen'  #'lightyellow'
 In.col_span_ref = [1, 1];  In.col_span_okng = [5, 1]  # 근거, OK(NG) 등 2열 배열 간격 설정
-In.font_h1 = '28px';  In.font_h2 = '24px';  In.font_h3 = '22px';  In.font_h4 = '20px';  In.font_h5 = '18px';  In.font_h6 = '15px'
+In.font_h1 = '28px';  In.font_h2 = '24px';  In.font_h3 = '22px';  In.font_h4 = '20px';  In.font_h5 = '18px';  In.font_h6 = '15px';  In.max_width = 1800
 
 color = 'green'
 In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
@@ -39,12 +40,12 @@ def Sidebar(h4, h5):
     with col[0]:
         In.fck = st.number_input(h5 + r'￭ $\bm{{\small{{f_{ck}}} }}$ [MPa]', min_value = 10., value = 21., step = 1., format = '%.0f')
         In.fy = st.number_input(h5 + r'￭ $\bm{{\small{{f_{y}}} }}$ [MPa]', min_value = 10., value = 400., step = 10., format = '%.0f')
-        In.ffu = st.number_input(h5 + r'￭ $\bm{{\small{{f_{fu}}} }}$ [MPa]', min_value = 10., value = 1440., step = 10., format = '%.0f')
+        In.f_fu = st.number_input(h5 + r'￭ $\bm{{\small{{f_{fu}}} }}$ [MPa]', min_value = 10., value = 1440., step = 10., format = '%.0f')
         Ec = 8500*(In.fck+4)**(1/3)/1e3
-    with col[1]:
-        In.Ec = st.number_input(h5 + r'￭ $\bm{{\small{{E_{c}}} }}$ [GPa]', min_value = 10., value = Ec, step = 1., format = '%.1f', disabled=True)
-        In.Es = st.number_input(h5 + r'￭ $\bm{{\small{{E_{s}}} }}$ [GPa]', min_value = 10., value = 200., step = 10., format = '%.1f')
-        In.Ef = st.number_input(h5 + r'￭ $\bm{{\small{{E_{f}}} }}$ [GPa]', min_value = 10., value = 120., step = 10., format = '%.1f')
+    with col[1]:   # MPa로 변경 *1e3
+        In.Ec = st.number_input(h5 + r'￭ $\bm{{\small{{E_{c}}} }}$ [GPa]', min_value = 10., value = Ec, step = 1., format = '%.1f', disabled=True) * 1e3
+        In.Es = st.number_input(h5 + r'￭ $\bm{{\small{{E_{s}}} }}$ [GPa]', min_value = 10., value = 200., step = 10., format = '%.1f') * 1e3
+        In.Ef = st.number_input(h5 + r'￭ $\bm{{\small{{E_{f}}} }}$ [GPa]', min_value = 10., value = 120., step = 10., format = '%.1f') * 1e3
     
     sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
     sb.write(h4, ':red[✤ Reinforcement in Tension (인장 보강)]')
@@ -52,6 +53,7 @@ def Sidebar(h4, h5):
     col = sb.columns(2, gap = 'medium')
     with col[0]:
         In.depth = st.number_input(h5 + r'￭ $\bm{{\small{{ d}} }}$ (인장철근 도심) [mm]', min_value = 10., value = 520., step = 10., format = '%.0f')
+        In.dt = In.depth  # 초기값
     if 'Doubl' in In.Layer:
         with col[1]:
             In.dt = st.number_input(h5 +  r'￭ $\bm{{\small{{ d_t}} }}$ (최외측) [mm]', min_value = 10., value = 540., step = 10., format = '%.0f')
@@ -61,6 +63,7 @@ def Sidebar(h4, h5):
         In.Dia = st.number_input(h5 +  '￭ Dia. (보강재 직경) [mm]', min_value = 4., value = 25.4, step = 0.2, format = '%.1f')
     with col[1]:
         In.QTY = st.number_input(h5 +  "￭ Q'TY (보강재 개수) [EA]", min_value = 1, value = 8, step = 1, format = '%d')
+    In.As = np.pi*In.Dia**2/4 * In.QTY;  In.Af = In.As
 
 
     sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
@@ -74,5 +77,6 @@ def Sidebar(h4, h5):
         In.Dia1 = st.number_input(h5 +  '￭ Dia. (보강재 직경) [mm]', min_value = 5., value = 25.4, step = 0.2, format = '%.1f')
     with col[1]:
         In.QTY1 = st.number_input(h5 +  "￭ Q'TY (보강재 개수) [EA]", min_value = 1, value = 2, step = 1, format = '%d')
+    In.As1 = np.pi*In.Dia1**2/4 * In.QTY1;  In.Af1 = In.As1
 
     return In

@@ -1,8 +1,9 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import style, Sidebar
+import style, Sidebar, Calculate, Result
 from Sidebar import In
+
 
 ### * -- Set page config
 # emoji: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
@@ -19,12 +20,11 @@ st.set_page_config(page_title = "Beam Design (FRP vs. Rebar)", page_icon = "beam
 
 
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
-max_width=1800
 css = f""" <style>
     .block-container {{
         margin-top: 20px;
         padding-top: 0px;
-        max-width: {max_width}px !important;
+        max-width: {In.max_width}px !important;
     }}
     .element-container {{
             white-space: nowrap;            
@@ -79,17 +79,6 @@ css = f""" <style>
 </style> """
 st.markdown(css, unsafe_allow_html=True)
 
-# 왼쪽 사이드바 인쇄하지 않기 설정
-st.markdown("""
-<style>
-@media print {
-    [data-testid=stSidebar] {
-        display: none;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
-
 # 모든 글씨 및 라텍스 수식 진하게 설정
 st.markdown('''
 <style>
@@ -112,47 +101,9 @@ st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 
 In = Sidebar.Sidebar(h4, h5)
 
+R = Calculate.RC(In)
+F = Calculate.FRP(In)
 
-
-import plotly.graph_objects as go
-
-fig = go.Figure()  # Create a blank figure
-max_width = 1800  ########
-height = 600
-
-# Add a rectangle shape
-fig.add_shape(
-    type="rect",
-    # xref='x', yref='y',
-    x0=0, y0=0, x1=max_width, y1=height,
-    line=dict(
-        color="RoyalBlue",
-        width=3,
-    ),
-    fillcolor='yellow'
-)
-fig.add_shape(
-    type="circle",
-    xref='x', yref='y',
-    x0=100, y0=100, x1=200, y1=200,
-    line=dict(
-        color="RoyalBlue",
-        width=2,
-    ),
-    fillcolor='cyan'
-)
-
-# Update the layout properties
-# fig.update_layout(
-#     autosize=False,
-#     width=max_width,
-#     height=height,
-# )
-
-fig.update_xaxes(range=[0, max_width], autorange=False, scaleanchor='y')
-fig.update_yaxes(range=[0, height],  autorange=False)
-# fig.update_xaxes(visible=False)
-# fig.update_yaxes(visible=False)
-
-st.plotly_chart(fig, use_container_width=True)
+# In, R, F
+Result.Fig(In, R, F)
 
