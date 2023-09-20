@@ -39,6 +39,78 @@ def Fig(In, R, F):
         if i == 1:  fillcolor = c2;  y0 = y1;  y1 = y0 - abs(R_c - F_c)        
         shape(fig, 'rect', x0,y0,x1,y1, 'black', 1, fillcolor)      # RC / FRP 압축 영역
 
+    # fig.add_annotation(x=-500, y=100, axref='x', ayref='y', ax=-500, ay=500, arrowside='end+start', arrowwidth=2, arrowsize=3, arrowhead=2, text='<b>bold</b> <i>italic</i>', font_size=20)
+    
+
+    # Add a filled triangle
+    x0 = -w/2 - 40
+    y0 = y_b
+    x1 = x0
+    y1 = y0 + h
+    fillcolor = 'black'
+    color = 'black'
+    width = 1.5
+    txt = In.height
+
+    arrow_size = 15;  arrow_width = arrow_size/4
+
+    fig.add_shape(    # 치수선
+        type='line',
+        x0=x0, y0=y0, x1=x1, y1=y1,
+        fillcolor=fillcolor,
+        line=dict(
+            color=color, width=width,
+        ),
+    )
+    # fig.add_annotation(
+    #     x=x0, y=(y0+y1)/2,
+    #     text='ff'
+    # )
+
+    fig.add_trace(go.Scatter(
+        mode='text',
+        x=[x0-10], y=[(y0+y1)/2],        
+        # x=[0, 100, 200],
+        # y=[100, 100, 100],
+        # mode="lines+markers+text",
+        # name="Lines, Markers and Text",   # legend
+        # text=["Text A", "Text B", "Text C"],
+        text=[f'{txt:.0f}'],
+        textposition="middle left",
+        textfont=dict(
+            family='Nanum Gothic',
+            size=18,
+            color="black"
+        ),
+    ))
+    for i in [1, 2]:
+        if x1 == x0:
+            if y0 <= y1:  sgn = 1
+            if y0 >= y1:  sgn =-1
+            a0 = x0;  a1 = x0 - arrow_width;  a2 = x0 + arrow_width
+            if i == 1:  b0 = y0;  b1 = y0 + sgn*arrow_size
+            if i == 2:  b0 = y1;  b1 = y1 - sgn*arrow_size
+            b2 = b1
+
+        fig.add_shape(    # 치수 보조선
+            type='line',
+            x0=x0-arrow_size, y0=b0, x1=x0+arrow_size, y1=b0,
+            fillcolor=fillcolor,
+            line=dict(
+                color=color, width=width,
+            ),
+        )        
+        fig.add_shape(    # 화살표
+            type="path",
+            path=f"M {a0} {b0} L {a1} {b1} L {a2} {b2} Z", # M = move to, L = line to, Z = close path
+            fillcolor=fillcolor,
+            line=dict(
+                color=color, width=width,
+            ),
+        )
+
+
+
 
     # Update the layout properties
     fig.update_layout(

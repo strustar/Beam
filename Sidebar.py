@@ -65,18 +65,19 @@ def Sidebar(h4, h5):
         In.QTY = st.number_input(h5 +  "￭ Q'TY (보강재 개수) [EA]", min_value = 1, value = 8, step = 1, format = '%d')
     In.As = np.pi*In.Dia**2/4 * In.QTY;  In.Af = In.As
 
+    In.depth1 = 0;  In.As1 = 0;  In.Af1 = 0
+    if 'Doubl' in In.type:
+        sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
+        sb.write(h4, ':blue[✤ Reinforcement in Compression (압축 보강)]')
+        col = sb.columns(2, gap = 'medium')
+        with col[0]:
+            In.depth1 = st.number_input(h5 + r"￭ $\bm{{\small{{ d'}} }}$ (압축철근 도심) [mm]", min_value = 10., value = 60., step = 10., format = '%.0f')
 
-    sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
-    sb.write(h4, ':blue[✤ Reinforcement in Compression (압축 보강)]')
-    col = sb.columns(2, gap = 'medium')
-    with col[0]:
-        In.depth1 = st.number_input(h5 + r"￭ $\bm{{\small{{ d'}} }}$ (압축철근 도심) [mm]", min_value = 10., value = 60., step = 10., format = '%.0f')
-
-    col = sb.columns(2, gap = 'medium')
-    with col[0]:
-        In.Dia1 = st.number_input(h5 +  '￭ Dia. (보강재 직경) [mm]', min_value = 5., value = 25.4, step = 0.2, format = '%.1f')
-    with col[1]:
-        In.QTY1 = st.number_input(h5 +  "￭ Q'TY (보강재 개수) [EA]", min_value = 1, value = 2, step = 1, format = '%d')
-    In.As1 = np.pi*In.Dia1**2/4 * In.QTY1;  In.Af1 = In.As1
+        col = sb.columns(2, gap = 'medium')
+        with col[0]:
+            In.Dia1 = st.number_input(h5 +  '￭ Dia. (보강재 직경) [mm]', min_value = 5., value = 25.4, step = 0.2, format = '%.1f')
+        with col[1]:
+            In.QTY1 = st.number_input(h5 +  "￭ Q'TY (보강재 개수) [EA]", min_value = 1, value = 2, step = 1, format = '%d')
+        In.As1 = np.pi*In.Dia1**2/4 * In.QTY1;  In.Af1 = In.As1
 
     return In

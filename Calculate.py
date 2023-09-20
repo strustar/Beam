@@ -12,11 +12,11 @@ def RC(In):
     depth = In.depth;		As = In.As;			dt = In.dt
     depth1 = In.depth1;		As1 = In.As1
 	# Input Data
- 
+
     ep_y = fy/Es;  ep_smin = 0.004
     if fy >= 400:  ep_smin = 2*ep_y
     
-  	# 계수 (Coefficient)
+    # 계수 (Coefficient)
     n = 2;  ep_co = 0.002;  ep_cu = 0.0033
     
     if fck > 40:
@@ -36,14 +36,14 @@ def RC(In):
     if fck == 50:  eta = 0.97
     if fck == 80:  eta = 0.87
 	# 계수 (Coefficient)
- 
+
 	# % 철근비 (rho)
     rho_s = As/(be*depth);  rho_s1 = As1/(be*depth)
     rho_sb = beta1*eta*(0.85*fck)/fy * ep_cu/(ep_cu + ep_y)
     rho_smax = beta1*eta*(0.85*fck)/fy * ep_cu/(ep_cu + ep_smin) *dt/depth
 	# % 철근비 (rho)
- 
- 	# % 중립축 위치(c or a) 및 설계강도 (phi*Mn)
+
+    # % 중립축 위치(c or a) 및 설계강도 (phi*Mn)
     rho_comY = beta1*eta*(0.85*fck)/fy * (depth1/depth) * ep_cu/(ep_cu - ep_y) + rho_s1
     if rho_s >= rho_comY:				# 압축철근 항복 (압축철근이 항복하기 위한 최소 철근비)
         a = (As - As1)*fy/(eta*0.85*fck*be);  c = a/beta1;  comSteel_Status = 'Yielding'
@@ -70,8 +70,8 @@ def RC(In):
     Ts = Cs;			Tc = (As*fy - As1*f_s1)/1e3
     Mn = Ts*(depth - depth1)/1e3 + Tc*(depth - a/2)/1e3;  Md = phi*Mn
 	# % 중립축 위치(c or a) 및 설계강도 (phi*Mn)
- 
- 	# % 철근비 체크
+
+    # % 철근비 체크
     lamda = 1;  fr = 0.63*lamda*np.sqrt(fck);  Ig = be*height**3/12;  yt = height/2
     Mcr = (fr*Ig)/yt/1e6
     rho_smin = 1.2*Mcr*1e6/(phi*fy*(depth - a/2))/(be*depth);  rho_Check = 'OK'
@@ -80,7 +80,7 @@ def RC(In):
     if rho_s < rho_smin:  rho_Check = 'NG1 (under)'
     if rho_s > rho_smaxD: rho_Check = 'NG2 (over)'
 	# % 철근비 체크
-  
+
     if As1 == 0:  ep_s1 = '-';  comSteel_Status = '-';  Ts = '-'
 
     R.eta = eta
@@ -104,7 +104,7 @@ def FRP(In):
     depth = In.depth;		Af = In.Af;			    dt = In.dt
     depth1 = In.depth1;		Af1 = In.Af1
 	# % Input Data
-  
+
     ep_fu = f_fu/Ef
 
 	# % 계수 (Coefficient)
@@ -117,7 +117,7 @@ def FRP(In):
     rho_f = Af/(be*depth);		rho_f1 = Af1/(be*depth)
     rho_fb = beta1*(0.85*fck)/f_fu*ep_cu/(ep_cu + ep_fu)
 	# % 보강비 (rho)
-  
+
     f_f1 = f_fu  # 압축 보강재 파괴된 것으로 초기에 가정
     for kk in range(3):  # 3번 반복        
         rho_fbD = rho_fb + rho_f1*f_f1/f_fu
@@ -162,5 +162,5 @@ def FRP(In):
     F.phi = phi;			F.phi_Status = phi_Status
     F.a = a;				F.c = c;				F.Cf = Cf;				F.Tf = Tf
     F.Cc = Cc;				F.Tc = Tc;				F.Mn = Mn;				F.Md = Md
- 
+
     return F
