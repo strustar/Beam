@@ -24,7 +24,7 @@ def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등
 
 def Sidebar(h4, h5):
     sb.write(h4, ':green[✤ Beam Type]')
-    In.type = sb.radio('숨김', ('Singly Reinforced', 'Doubly Reinforced'), horizontal=True, label_visibility='collapsed')
+    In.type = sb.radio('숨김', ('Singly Reinforced', 'Doubly Reinforced'), horizontal=True, label_visibility='collapsed', index=1)
 
     sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
     sb.write(h4, ':green[✤ Section Dimensions]')
@@ -49,7 +49,7 @@ def Sidebar(h4, h5):
     
     sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
     sb.write(h4, ':red[✤ Reinforcement in Tension (인장 보강)]')
-    In.Layer = sb.radio('숨김', ('Single Layer', 'Double Layer'), horizontal=True, label_visibility='collapsed', captions=['','보강재의 개수 : 짝수'])
+    In.Layer = sb.radio('숨김', ('Single Layer', 'Double Layer'), horizontal=True, label_visibility='collapsed', captions=['','보강재의 개수 : 짝수'], index=1)    
     col = sb.columns(2, gap = 'medium')
     with col[0]:
         In.depth = st.number_input(h5 + r'￭ $\bm{{\small{{ d}} }}$ (인장철근 도심) [mm]', min_value = 10., value = 520., step = 10., format = '%.0f')
