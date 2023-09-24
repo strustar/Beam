@@ -24,7 +24,7 @@ def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등
 
 def Sidebar(h4, h5):
     sb.write(h4, ':green[✤ Beam Type]')
-    In.type = sb.radio('숨김', ('Singly Reinforced', 'Doubly Reinforced'), horizontal=True, label_visibility='collapsed', index=1)
+    In.Type = sb.radio('숨김', ('Singly Reinforced', 'Doubly Reinforced'), horizontal=True, label_visibility='collapsed', index=1)
 
     sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
     sb.write(h4, ':green[✤ Section Dimensions]')
@@ -66,7 +66,7 @@ def Sidebar(h4, h5):
     In.As = np.pi*In.Dia**2/4 * In.QTY;  In.Af = In.As
 
     In.depth1 = 0;  In.As1 = 0;  In.Af1 = 0
-    if 'Doubl' in In.type:
+    if 'Doubl' in In.Type:
         sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
         sb.write(h4, ':blue[✤ Reinforcement in Compression (압축 보강)]')
         col = sb.columns(2, gap = 'medium')
