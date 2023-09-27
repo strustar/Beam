@@ -20,7 +20,6 @@ st.set_page_config(page_title = "Beam Design (FRP vs. Rebar)", page_icon = "beam
                     })
 ### * -- Set page config
 
-
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
 css = f""" <style>
     .block-container {{
@@ -108,4 +107,9 @@ F = Calculate.FRP(In)
 
 # In, R, F
 Result.Fig(In, R, F)
+[col1, col2] = st.columns([1200, 500])
+with col1:
+    Result.Table(In, R, F)
+with col2:
+    st.write('aa')
 
