@@ -1,8 +1,8 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import style, Sidebar, Calculate, Result
-from Sidebar import In
+import Radio_Style, Beam_Sidebar, Beam_Calculate, Beam_Result
+from Beam_Sidebar import In
 
 import os
 os.system('cls')  # 터미널 창 청소, clear screen
@@ -97,19 +97,111 @@ st.markdown('''
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
 
-style.radio(In.background_color, '32%')
+Radio_Style.radio(In.background_color, '32%')
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 
-In = Sidebar.Sidebar(h4, h5)
+In = Beam_Sidebar.Sidebar(h4, h5)
 
-R = Calculate.RC(In)
-F = Calculate.FRP(In)
+R = Beam_Calculate.RC(In)
+F = Beam_Calculate.FRP(In)
+
+# def ex():
+#     st.session_state.Type = 'Singly Reinforced'    
+# for v in st.session_state.items():
+#     v
+# st.button('KCI Rectangle', help = '철근콘크리트 공학(민창식, 예제 9.6~9.7) [교재에서 압축철근을 c가 아닌 a로 판단하여 오차 발생]', on_click = ex)
 
 # In, R, F
-Result.Fig(In, R, F)
+Beam_Result.Fig(In, R, F)
 [col1, col2] = st.columns([1200, 500])
 with col1:
-    Result.Table(In, R, F)
+    Beam_Result.Table(In, R, F)
 with col2:
-    st.write('aa')
+    st.write('## :blue[[✤ Examples (Singly Reinforced)]]')
+    st.write('#### 작성중...')
+    st.button('작성중...', use_container_width = False)
+    st.write('## :green[[✤ Examples (Doubly Reinforced)]]')
+
+def set_button_style(background_color, text_color, border_color, border_width, width, height, font_size):
+    button_style = f""" <style>
+        .stButton > button {{
+            background-color: {background_color};
+            color: {text_color};
+            border-color: {border_color};
+            border-width: {border_width}px;
+            width: {width}px;
+            # height: {height}px;
+            # font-size: {font_size}px;
+            # text-align: right;
+        }}
+    </style> """
+    st.markdown(button_style, unsafe_allow_html=True)
+
+set_button_style('lightblue', 'black', 'blue', 3, 200, 50, 30)  
+
+
+
+# Set the button color to red,
+# the text color to white,
+# the border color to blue and the border width to 3 pixels,
+# and the width and height of the button.
+# Set font size to 20 pixels and align text in center.
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+# Write some simple HTML code
+html_code = """
+    <div style="background-color: lightblue; padding: 10px;">
+        <h1>Hello, Streamlit!</h1>
+        <p>This is a simple example of inserting HTML code into a Streamlit app.</p>
+    </div>
+"""
+
+# Use the 'components.html' function to insert the HTML code
+components.html(html_code)
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+# Define the URL of the external webpage
+url = "https://www.weather.go.kr/w/index.do"
+
+# Use the 'components.html' function and pass in the iframe HTML code
+components.html(f'<iframe src="{url}" width="100%" height="1200px" style="border:none;"></iframe>', height=1200)
+
+
+from reportlab.pdfgen import canvas
+
+c = canvas.Canvas("hello.pdf")
+c.drawString(100, 750, r"$\alpha$Hello assdddddddddddddatt World")
+c.save()
+
+import pyautogui
+
+# Capture a specific region (top-left corner of the second monitor)
+screenshot = pyautogui.screenshot(region=(3840, 0, 3840, 2160))
+
+# Save the image
+screenshot.save("screenshot.png")
+
+
+from PIL import Image
+from mss import mss
+
+# Create an MSS instance 
+sct = mss() 
+
+# Take a screenshot of the entire screen (or all screens)
+screenshot = sct.grab(sct.monitors[2])  # Change index according to your monitor
+
+# Convert the screenshot to an image (RGB format)
+img = Image.frombytes("RGB", screenshot.size, screenshot.bgra, "raw", "BGRX")
+
+# Save the image
+img.save('screenshot2.png')
+
+
+
+
 
