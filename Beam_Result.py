@@ -7,7 +7,7 @@ import pandas as pd
 # HTML Color Codes: https://htmlcolorcodes.com/color-names/
 # ₀₁₂₃₄₅₆₇₈₉ ⁰¹²³⁴⁵⁶⁷⁸⁹   α (알파), β (베타), εϵ (입실론), ρ (로우), π φφ (파이) ρ, ≠, &#8226;(·보다 큰것)
 
-fig_width = 1800;  fig_height = 600
+fig_width = 1800;  fig_height = 620
 table_line_width = 2;  table_font = 'Nanum Gothic, Arial, Helvetica'
 R_color = 'PaleTurquoise';  F_color = 'lightskyblue' #'greenyellow'  R_color = 'rgba(204, 255, 255, 1)';  F_color = 'rgba(102, 255, 255, 1)'
 # aquamarine
@@ -166,8 +166,8 @@ def Table(In, R, F):
 
     r = 24;  data[r][0] = f'<b>{R.Cc:,.1f}';  data[r][2] = f'<b>{F.Cc:,.1f}';  data[r][1] = '<b><i>C<sub>c</sub> = T<sub>c</sub></i>  [kN]'
     if abs(F.Cc - F.Tc) > 1e-3:  data[r][2] = f'<b>[<i>C<sub>c</sub></i> = {F.Cc:,.1f}]  ≠  [<i>T<sub>c</sub></i> = {F.Tc:,.1f}]';  data[r][3] = f'<b>※  See  Footnote'
-    r = 25;  data[r][0] = f'<b>{R.Mn:,.1f}';  data[r][2] = f'<b>{F.Mn:,.1f}';  data[r][1] = '<b><i>M<sub>n</sub></i>  [kN&#8226;m]'
-    r = 26;  data[r][0] = f'<b>{R.Md:,.1f}';  data[r][2] = f'<b>{F.Md:,.1f}';  data[r][1] = '<b><i>M<sub>d</sub></i>  [kN&#8226;m]'
+    r = 25;  data[r][0] = f'<b>{R.Mn:,.1f}';  data[r][2] = f'<b>{F.Mn:,.1f}';  data[r][1] = '<b>M<sub>n</sub>  [kN&#8226;m]'
+    r = 26;  data[r][0] = f'<b>{R.Md:,.1f}';  data[r][2] = f'<b>{F.Md:,.1f}';  data[r][1] = '<b>ϕM<sub>n</sub>  [kN&#8226;m]'
     
         
     for r in [4, 7, 10, 16, 19, 22]:
@@ -196,7 +196,7 @@ def Table(In, R, F):
         if r ==25:  v1 = R.Mn;        v2 = F.Mn
         if r ==26:  v1 = R.Md;        v2 = F.Md
 
-        if isinstance(v1, str):  continue
+        if isinstance(v1, str) or v1 == 0:  continue
         value = (v2 - v1)/v1 * 100
         if v1 <= v2:  data[r][3] = f'🔺<b>{value:8,.1f} %</b>';  font_color[3][r] = 'red'
         if v1 >= v2:  data[r][3] = f'🔽<b>{value:8,.1f} %</b>';  font_color[3][r] = 'blue'
@@ -227,9 +227,8 @@ def Table(In, R, F):
             height = 33,            
         ), )],
     )
-    fig.update_layout(width=1200, height=1100, margin = dict(l = 1, r = 1, t = 1, b = 1))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width=1200, height=1120, margin = dict(l = 1, r = 1, t = 1, b = 1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
-
 
 
 def Fig(In, R, F):    
@@ -255,7 +254,7 @@ def Fig(In, R, F):
         if i == 2:  fillcolor = c2;  y0 = y1;  y1 = y0 - abs(R_c - F_c)        
         shape(fig, 'rect', x0,y0,x1,y1, fillcolor, 'black', 1)      # RC / FRP 압축 영역
     opt = []
-    dimension(fig, -w/2,yb,h, 'black', 'black', 1.5, f'{In.height:,.0f}', 'left',   [])      # 세로 치수        
+    dimension(fig, -w/2,yb,h, 'black', 'black', 1.5, f'{In.height:,.0f}', 'left',   [])    # 세로 치수        
     dimension(fig, -w/2,yb,w, 'black', 'black', 1.5, f'{In.be:,.0f}',     'bottom', [])    # 가로 치수
     ## 콘크리트 단면
 
@@ -290,7 +289,7 @@ def Fig(In, R, F):
 
     ## 변형률 (ep_cu, ep_s, ep_f),  % 1 : KDS (RC), 좌측, 2: ACI (FRP), 우측    
     max_ep_pixel = 150;  max_ep = max(R.ep_cu, R.ep_s, F.ep_cu, F.ep_f);  ep_ratio = max_ep_pixel/max_ep
-    for i in range(1, 2+1):
+    for i in [1, 2]:
         if i == 1:  sgn =-1;  center = R.c;  ep_cu = R.ep_cu;  ep_sf = R.ep_s;  ep_t = R.ep_t;  ep_sf1 = R.ep_s1;  Failure_Mode = R.Failure_Mode
         if i == 2:  sgn = 1;  center = F.c;  ep_cu = F.ep_cu;  ep_sf = F.ep_f;  ep_t = F.ep_t;  ep_sf1 = F.ep_f1;  Failure_Mode = F.Failure_Mode
         c = center*bh_ratio
@@ -332,9 +331,12 @@ def Fig(In, R, F):
         # 압축 철근 변형률  (epsilon_sf1)
         if 'Doubl' in In.Type:
             x1 = x0 - sgn*ep_sf1*ep_ratio;  y0 = yt - d1;  y1 = y0
-            shape(fig, 'line', x0,y0,x1,y1, fillcolor, 'darkgreen', 2)                        # 수평선
-            annotation(fig, (x0+x1)/2,y0, 'darkgreen', f'{ep_sf1:.4f}', 'center', 'bottom')   # 변형률 텍스트
-
+            shape(fig, 'line', x0,y0,x1,y1, fillcolor, 'darkgreen', 2)                        # 수평선            
+            if abs(ep_sf1*ep_ratio) >= max_ep_pixel/2.8:
+                annotation(fig, (x0+x1)/2,y0, 'darkgreen', f'{ep_sf1:.4f}', 'center', 'bottom')   # 변형률 텍스트                
+            else:
+                annotation(fig, x1-sgn*8,y0, 'darkgreen', f'{ep_sf1:.4f}', loc, 'middle')     # 변형률 텍스트               
+                
 
     ## 응력, 힘 Stress, Strength, C, T, Mn,  % 1 : KDS (RC), 좌측, 2: ACI (FRP), 우측
     for i in range(1, 2+1):
@@ -381,7 +383,7 @@ def Fig(In, R, F):
         annotation(fig, x0 + sgn*10, yb + 0.35*h, color, '('+phi_Status+')', loc, 'middle')
         
         ##  title
-        x0 = sgn*fig_width/4;  y0 = 570
+        x0 = sgn*fig_width/4;  y0 = fig_height - 25
         if i == 1:  txt = '[ Rebar Concrete (KDS 14 : 2021) ]';  bgcolor = R_color
         if i == 2:  txt = '[ FRP Concrete (ACI 440.1R-15) ]';    bgcolor = F_color
         annotation(fig, x0, y0, 'black', txt, 'center', 'middle', bgcolor = bgcolor, size = 24)

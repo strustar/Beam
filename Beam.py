@@ -3,9 +3,11 @@ import numpy as np
 import pandas as pd
 import Radio_Style, Beam_Sidebar, Beam_Calculate, Beam_Result
 from Beam_Sidebar import In
+import Beam_Examples as ex
 
 import os
 os.system('cls')  # 터미널 창 청소, clear screen
+# pip freeze > requirements.txt
 
 ### * -- Set page config
 # emoji: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
@@ -105,22 +107,70 @@ In = Beam_Sidebar.Sidebar(h4, h5)
 R = Beam_Calculate.RC(In)
 F = Beam_Calculate.FRP(In)
 
-# def ex():
-#     st.session_state.Type = 'Singly Reinforced'    
-# for v in st.session_state.items():
-#     v
-# st.button('KCI Rectangle', help = '철근콘크리트 공학(민창식, 예제 9.6~9.7) [교재에서 압축철근을 c가 아닌 a로 판단하여 오차 발생]', on_click = ex)
-
 # In, R, F
 Beam_Result.Fig(In, R, F)
 [col1, col2] = st.columns([1200, 500])
 with col1:
     Beam_Result.Table(In, R, F)
 with col2:
+    import plotly.graph_objects as go
+    st.write('## :purple[⚖️ [Rebar 🆚 FRP]]')    
+    x = ['Rebar', 'FRP']
+    fig = go.Figure(data = [
+        go.Bar(x = x, y = [R.Mn, F.Mn], name = 'M<sub>n</sub>', marker_color='lightskyblue', marker_line_color='black', marker_line_width=2,
+            text='M<sub>n</sub>', textfont_size=20, textposition='inside'),
+        go.Bar(x = x, y = [R.Md, F.Md], name = 'ϕM<sub>n</sub>', marker_color='orange', marker_line_color='black', marker_line_width=2,
+            text='ϕM<sub>n</sub>', textfont_size=20, textposition='inside'),
+    ])
+
+    # Update the layout properties
+    fig.update_layout(
+        autosize=False,
+        width=550, height=400,
+        margin=dict(l=0, r=12, t=12, b=0),   # 축 외부 박스 mirror하기 위해서, 오른쪽, 위쪽 여백 12 부여함!!!
+        # legend = dict(x=1.3, y=1.03, xanchor = 'right', font_size = 20, bordercolor = 'blue', borderwidth = 2),
+        barmode = 'group', bargap = 0.3, bargroupgap = 0.15, showlegend=False,
+    )
+    
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', mirror=True, showgrid=True, gridwidth=1, gridcolor='gray')
+    fig.update_xaxes(tickfont = dict(size = 20, color = 'purple'))  # font_family = 'Arial'
+    fig.update_yaxes(tickfont = dict(size = 20, color = 'black'), range=[0, 1.2*max(R.Mn, F.Mn)])
+    fig.update_yaxes(title = dict(text = 'M<sub>n</sub>  or  ϕM<sub>n</sub>  [kN&#8226;m]', font_size = 20, font_color = 'green'))
+    
+    for i in [1, 2]:
+        if i == 1: v1 = R.Mn;  v2 = F.Mn;  x = 0.85;  y = 1.06*F.Mn
+        if i == 2: v1 = R.Md;  v2 = F.Md;  x = 1.22;  y = 1.08*F.Md
+
+        value = (v2 - v1)/v1 * 100
+        color = 'red' if v2 > v1 else 'blue'
+        text = '⬆ 'if v2 > v1 else '⬇ '
+        text = text + f'{value:,.1f}' + '%' 
+        fig.add_annotation(
+            x=x, y=y, text=text,
+            font_color=color, font_size=20, font_family='Arial', showarrow=False,
+        )
+
+    st.plotly_chart(fig)
+
+
     st.write('## :blue[[✤ Examples (Singly Reinforced)]]')
-    st.write('#### 작성중...')
-    st.button('작성중...', use_container_width = False)
+    col = st.columns(2)
+    with col[0]:
+        st.button('Example 1', on_click = ex.Singly_ex1)
+        st.button('Example 3', on_click = ex.Singly_ex3)        
+    with col[1]:
+        st.button('Example 2', on_click = ex.Singly_ex2)                
+        st.button('Example 4', on_click = ex.Singly_ex4)        
+    
     st.write('## :green[[✤ Examples (Doubly Reinforced)]]')
+    col = st.columns(2)
+    with col[0]:
+        st.button('Example 5', on_click = ex.Doubly_ex1)
+        st.button('Example 7', on_click = ex.Doubly_ex3)
+    with col[1]:
+        st.button('Example 6', on_click = ex.Doubly_ex2)
+        st.button('Example 8', on_click = ex.Doubly_ex4)
 
 def set_button_style(background_color, text_color, border_color, border_width, width, height, font_size):
     button_style = f""" <style>
@@ -136,16 +186,9 @@ def set_button_style(background_color, text_color, border_color, border_width, w
         }}
     </style> """
     st.markdown(button_style, unsafe_allow_html=True)
-
-set_button_style('lightblue', 'black', 'blue', 3, 200, 50, 30)  
-
+set_button_style('lightblue', 'black', 'purple', 3, 200, 50, 30)  
 
 
-# Set the button color to red,
-# the text color to white,
-# the border color to blue and the border width to 3 pixels,
-# and the width and height of the button.
-# Set font size to 20 pixels and align text in center.
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -169,39 +212,3 @@ url = "https://www.weather.go.kr/w/index.do"
 
 # Use the 'components.html' function and pass in the iframe HTML code
 components.html(f'<iframe src="{url}" width="100%" height="1200px" style="border:none;"></iframe>', height=1200)
-
-
-from reportlab.pdfgen import canvas
-
-c = canvas.Canvas("hello.pdf")
-c.drawString(100, 750, r"$\alpha$Hello assdddddddddddddatt World")
-c.save()
-
-import pyautogui
-
-# Capture a specific region (top-left corner of the second monitor)
-screenshot = pyautogui.screenshot(region=(3840, 0, 3840, 2160))
-
-# Save the image
-screenshot.save("screenshot.png")
-
-
-from PIL import Image
-from mss import mss
-
-# Create an MSS instance 
-sct = mss() 
-
-# Take a screenshot of the entire screen (or all screens)
-screenshot = sct.grab(sct.monitors[2])  # Change index according to your monitor
-
-# Convert the screenshot to an image (RGB format)
-img = Image.frombytes("RGB", screenshot.size, screenshot.bgra, "raw", "BGRX")
-
-# Save the image
-img.save('screenshot2.png')
-
-
-
-
-

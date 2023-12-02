@@ -62,7 +62,7 @@ def RC(In):
     phi = 0.65 + (ep_t - ep_tccl)*(0.85 - 0.65)/(ep_ttcl - ep_tccl);  phi_Status = 'Transition  Zone'
     if ep_t <= ep_tccl:  phi = 0.65;  phi_Status = 'Compression  Controlled'
     if ep_t >= ep_ttcl:  phi = 0.85;  phi_Status = 'Tension  Controlled'
-    Failure_Mode = '✅  Steel  Yielding'
+    Failure_Mode = '✔️  Steel  Yielding'
     if ep_t < ep_smin:  Failure_Mode = '❌  NG  (Concrete  Crushing)'
 	# % 강도감소계수 (phi) : 띠철근 기준
 		
@@ -74,7 +74,7 @@ def RC(In):
     # % 철근비 체크
     lamda = 1;  fr = 0.63*lamda*np.sqrt(fck);  Ig = be*height**3/12;  yt = height/2
     Mcr = (fr*Ig)/yt/1e6
-    rho_smin = 1.2*Mcr*1e6/(phi*fy*(depth - a/2))/(be*depth);  rho_Check = '✅  Under-Reinforced'
+    rho_smin = 1.2*Mcr*1e6/(phi*fy*(depth - a/2))/(be*depth);  rho_Check = '✔️  Under-Reinforced'
     rho_sbD = rho_sb + rho_s1*(f_s1/fy)
     rho_smaxD = rho_smax + rho_s1*(f_s1/fy)
     if rho_s < rho_smin:  rho_Check = '❌  NG  (<i>ρ</i>  <  <i>ρ<sub>min</sub></i>)'
@@ -104,7 +104,7 @@ def FRP(In):
     depth1 = In.depth1;		Af1 = In.Af1
 	# % Input Data
 
-    ep_fu = f_fu/Ef
+    ep_fu = f_fu/Ef    
 
 	# % 계수 (Coefficient)
     ep_cu = 0.003;  beta1 = 0.85
@@ -128,11 +128,11 @@ def FRP(In):
         
         # % 중립축 위치(c or a) 및 설계강도 (phi*Mn)
         if rho_f >= rho_fbD:  # Over-reinforced : Concrete crushing
-            Failure_Mode = '✅  Concrete  Crushing';  rho_Check = '✅  Over-Reinforced'
+            Failure_Mode = '✔️  Concrete  Crushing';  rho_Check = '✔️  Over-Reinforced'
             p = (0.85*fck)*be*beta1;  q = (Af1 + Af)*Ef*ep_cu;  r = -(Af1*Ef*ep_cu*depth1 + Af*Ef*ep_cu*depth)
             c = (-q + np.sqrt(q**2 - 4*p*r))/(2*p);  a = beta1*c
         else:                 # Under-reinforced : FRP Rupture
-            Failure_Mode = '✅  FRP  Rupture';  rho_Check = '✅  Under-Reinforced'
+            Failure_Mode = '✔️  FRP  Rupture';  rho_Check = '✔️  Under-Reinforced'
             cb = ep_cu*depth/(ep_cu + ep_fu);  c = cb;  a = beta1*c
 
             # %p = 0.85*fck*be*beta1;  q = (Af1*Ef*ep_cu - Af*f_fu);  r = -Af1*Ef*ep_cu*depth1;
