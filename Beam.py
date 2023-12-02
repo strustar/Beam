@@ -22,6 +22,19 @@ st.set_page_config(page_title = "Beam Design (FRP vs. Rebar)", page_icon = "beam
                     })
 ### * -- Set page config
 
+
+# 스트림릿 앱의 전체 배경색을 흰색으로 설정
+st.markdown(
+    """
+    <style>
+        body {
+            background-color: #ffffff;  /* 흰색 배경색으로 변경 */
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
 css = f""" <style>
     .block-container {{
