@@ -12,7 +12,7 @@ os.system('cls')  # 터미널 창 청소, clear screen
 ### * -- Set page config
 # emoji: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
 # https://zzsza.github.io/mlops/2021/02/07/python-streamlit-dashboard/  유용한 사이트
-st.set_page_config(page_title = "Beam Design (FRP vs. Rebar)", page_icon = "beam_icon.png", layout = "centered",    # centered, wide
+st.set_page_config(page_title = "Beam Design (FRP vs. Rebar)", page_icon = "beam.png", layout = "centered",    # centered, wide
                     initial_sidebar_state="expanded",
                     # runOnSave = True,
                     menu_items = {        #   initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
@@ -24,15 +24,11 @@ st.set_page_config(page_title = "Beam Design (FRP vs. Rebar)", page_icon = "beam
 
 
 # 스트림릿 앱의 전체 배경색을 흰색으로 설정
-st.markdown(
-    """
+st.markdown("""
     <style>
-        body {
-            background-color: #ffffff;  /* 흰색 배경색으로 변경 */
-        }
+        body {background-color: #ffffff;  /* 흰색 배경색으로 변경 */}
     </style>
-    """,
-    unsafe_allow_html=True
+    """, unsafe_allow_html=True
 )
 
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
@@ -97,17 +93,18 @@ st.markdown(css, unsafe_allow_html=True)
 
 # 모든 글씨 및 라텍스 수식 진하게 설정
 st.markdown('''
-<style>
-    .main * {
-        # font-size: 26pt !important;
-        font-weight: bold !important;
-        # font-family: Arial !important;            
-    }
-    # .mjx-chtml {
-    #     font-size: 36pt !important;
-    # }
-</style>
-''', unsafe_allow_html=True)
+    <style>
+        .main * {
+            # font-size: 26pt !important;
+            font-weight: bold !important;
+            # font-family: Arial !important;            
+        }
+        # .mjx-chtml {
+        #     font-size: 36pt !important;
+        # }
+    </style>
+    ''', unsafe_allow_html=True
+)
 
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
