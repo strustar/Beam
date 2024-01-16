@@ -23,6 +23,12 @@ def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등
 
 
 def Sidebar(h4, h5):
+    html_code = "<span style='background-color: yellow; font-size: 20px'> 문의 사항은 언제든지 아래 이메일로 문의 주세요^^</span>"
+    sb.markdown(html_code, unsafe_allow_html=True)
+    html_code = "<span style='background-color: yellow; font-size: 20px'> 📧📬 : strustar@konyang.ac.kr (건양대 손병직)</span>"
+    sb.markdown(html_code, unsafe_allow_html=True)
+    
+    sb.write('## :blue[[Information : 입력값 📘]]')
     sb.write(h4, ':green[✤ Beam Type]')
     In.Type = sb.radio('숨김', ('Doubly Reinforced', 'Singly Reinforced'), horizontal=True, label_visibility='collapsed', key='Type')
 
