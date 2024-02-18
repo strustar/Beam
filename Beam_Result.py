@@ -3,35 +3,25 @@ import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
 
-# W3Schools HTML Colors: https://www.w3schools.com/colors/colors_names.asp
-# HTML Color Codes: https://htmlcolorcodes.com/color-names/
-# ₀₁₂₃₄₅₆₇₈₉ ⁰¹²³⁴⁵⁶⁷⁸⁹   α (알파), β (베타), εϵ (입실론), ρ (로우), π φφ (파이) ρ, ≠, &#8226;(·보다 큰것)
-
 fig_width = 1800;  fig_height = 620
 table_line_width = 2;  table_font = 'Nanum Gothic, Arial, Helvetica'
 R_color = 'PaleTurquoise';  F_color = 'lightskyblue' #'greenyellow'  R_color = 'rgba(204, 255, 255, 1)';  F_color = 'rgba(102, 255, 255, 1)'
-# aquamarine
 
 def shape(fig, typ, x0,y0,x1,y1, fillcolor, color, width, **kargs):
     dash = 'solid'
-    if len(kargs) > 0:  dash = kargs['LineStyle']
-            
+    if len(kargs) > 0:  dash = kargs['LineStyle']            
     fig.add_shape(
-        type=typ,
-        x0=x0, y0=y0, x1=x1, y1=y1,
-        fillcolor=fillcolor,
+        type=typ, x0=x0, y0=y0, x1=x1, y1=y1, fillcolor=fillcolor,
         line=dict(color=color, width=width, dash=dash, ),   # dash = solid, dot, dash, longdash, dashdot, longdashdot, '5px 10px'
     )
 
-def annotation(fig, x,y, color, txt, locx, locy, **kargs):
+def annotation(fig, x,y, color, txt, xanchor, yanchor, **kargs):
     bgcolor = None;  size = 17
     if len(kargs) > 0:  bgcolor = kargs['bgcolor'];  size = kargs['size']
     fig.add_annotation(
-        x=x, y=y, text=txt,
-        showarrow=False,
-        bgcolor=bgcolor,
+        x=x, y=y, text=txt, showarrow=False, bgcolor=bgcolor,
         font=dict(color=color, size=size, family='Arial, Helvetica', ),
-        xanchor=locx, yanchor=locy,
+        xanchor=xanchor, yanchor=yanchor,
     )
 
 def dimension(fig, x0,y0,length, fillcolor, color, width, txt, loc, opt):
@@ -231,7 +221,7 @@ def Table(In, R, F):
     st.plotly_chart(fig)
 
 
-def Fig(In, R, F):    
+def Fig(In, R, F):
     fig = go.Figure()  # Create a blank figure    
 
     # 그림 상자 외부 박스    
@@ -355,8 +345,8 @@ def Fig(In, R, F):
         # a (a = beta1*c) 치수
         if i == 1:  loc = 'right';  sf = 's';  Md = R.Md;  phi = R.phi;  phi_Status = R.phi_Status
         if i == 2:  loc = 'left' ;  sf = 'f';  Md = F.Md;  phi = F.phi;  phi_Status = F.phi_Status
-        txt = f'𝒂 = {a:.1f}'
-        if i == 2 and F.rho_f < F.rho_fb:  txt = f'𝒂<sub>b</sub> = {a:.1f}'    # FRP and Under-reinforced
+        txt = f'𝑎 = {a:.1f}'
+        if i == 2 and F.rho_f < F.rho_fb:  txt = f'𝑎<sub>b</sub> = {a:.1f}'    # FRP and Under-reinforced
         dimension(fig, x0 + sgn*4, yt - a_ratio, a_ratio, 'black', 'black', 1.5, txt, loc, [])
         
         # Cc, Cs(or Cf) (Compression)
@@ -375,7 +365,7 @@ def Fig(In, R, F):
         dimension(fig, x0+sgn*100, yt - d, -sgn*100, 'red', 'red', 2.5, f'T = {Tc + Ts:,.1f} kN', 'bottom', opt3)
 
         # Md = phi Mn, phi_Status
-        txt = f'ϕM<sub>n</sub> = {Md:,.1f} kN&#8226;m<br>(ϕ = {phi:.3f})'
+        txt = f'ϕM<sub>n</sub> = {Md:,.1f} kN&#8226;m<br>(ϕ = {phi:.3f})'  # •·
         annotation(fig, x0 + sgn*10, yb + 0.45*h, 'black', txt, loc, 'middle')  # &#8226;(·보다 큰것)
         color = 'black'
         if 'Tension' in phi_Status:  color = 'red'

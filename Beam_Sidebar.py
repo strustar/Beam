@@ -1,29 +1,28 @@
 import streamlit as st
 import numpy as np
-# import re
-sb = st.sidebar
 
 class In:
     pass
 
 In.ok = ':blue[∴ OK] (🆗✅)';  In.ng = ':red[∴ NG] (❌)'
-In.space = '<div style="margin:0px">'
-In.background_color = 'linen'  #'lightyellow'
 In.col_span_ref = [1, 1];  In.col_span_okng = [5, 1]  # 근거, OK(NG) 등 2열 배열 간격 설정
-In.font_h1 = '28px';  In.font_h2 = '24px';  In.font_h3 = '22px';  In.font_h4 = '20px';  In.font_h5 = '18px';  In.font_h6 = '15px';  In.max_width = 1800
+In.max_width = '1800px'
 
-color = 'green'
-In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
-In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margin-bottom:30px; margin-right: -30px">' # 2줄
-border = '<hr style="border-top: 2px solid purple; margin-top:15px; margin-bottom:15px;">'
+In.font_h1 = '32px';  In.font_h2 = '28px';  In.font_h3 = '26px';  In.font_h4 = '24px';  In.font_h5 = '20px';  In.font_h6 = '16px'
+In.h2 = '## ';  In.h3 = '### ';  In.h4 = '#### ';  In.h5 = '##### ';  In.h6 = '###### '
+In.s1 = In.h5 + '$\quad$';  In.s2 = In.h5 + '$\qquad$';  In.s3 = In.h5 + '$\quad \qquad$'
+
+In.border1 = f'<hr style="border-top: 2px solid green; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
+In.border2 = f'<hr style="border-top: 5px double green; margin-top: 0px; margin-bottom:30px; margin-right: -30px">'  # 2줄
 
 def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등    
     return st.markdown(span + f'<div style="white-space:pre-line; display:inline-block; font-size: {fs}; line-height: 1.8; text-indent: 0em">{txt}</div>', unsafe_allow_html=True)    
-    # return st.markdown(span + f'<span style="white-space:pre-line; display:inline; font-size: {fs}; line-height: 2; padding-left: 0px; text-indent: 10em">{txt}</span>', unsafe_allow_html=True)    
 
+def Sidebar():    
+    sb = st.sidebar
+    side_border = '<hr style="border-top: 2px solid purple; margin-top:15px; margin-bottom:15px;">'
+    h5 = In.h5;  h4 = h5
 
-def Sidebar(h4, h5):
-    # HTML 코드
     html_code = """
         <div style="background-color: lightblue; margin-top: 10px; padding: 10px; padding-top: 20px; padding-bottom:0px; font-weight:bold; border: 2px solid black; border-radius: 20px;">
             <h5>문의 사항은 언제든지 아래 이메일로 문의 주세요^^</h5>
@@ -31,12 +30,20 @@ def Sidebar(h4, h5):
         </div>
     """
     sb.markdown(html_code, unsafe_allow_html=True)
-    
-    sb.write('## :blue[[Information : 입력값 📘]]')
-    sb.write(h4, ':green[✤ Beam Type]')
-    In.Type = sb.radio('숨김', ('Doubly Reinforced', 'Singly Reinforced'), horizontal=True, label_visibility='collapsed', key='Type')
 
-    sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
+    sb.write('');  sb.write('## ', ':blue[[Information : 입력값 📘]]');  sb.write('')    
+    sb.write(h4, '✤ 워터마크(watermark) 제거*')
+    col = sb.columns(2)
+    with col[0]:
+        In.watermark = st.text_input(h5 + '✦ 숨김', type='password', placeholder='password 입력하세요' , label_visibility='collapsed')  # , type='password'
+    sb.write('###### $\,$', ':blue[*워터마크를 제거 하시려면 메일로 문의주세요]')
+    
+    sb.write(h4, ':green[✤ Beam Type]')
+    col = sb.columns([4, 1])
+    with col[0]:
+        In.Type = st.radio('숨김', ('Doubly Reinforced', 'Singly Reinforced'), horizontal=True, label_visibility='collapsed', key='Type')
+
+    sb.markdown(side_border, unsafe_allow_html=True)   #  구분선
     sb.write(h4, ':green[✤ Section Dimensions]')
     col = sb.columns(2, gap = 'medium')
     with col[0]:
@@ -44,7 +51,7 @@ def Sidebar(h4, h5):
     with col[1]:
         In.height = st.number_input(h5 + r'￭ $\bm{{\small{{h}} }}$ [mm]', min_value = 10., value = 600., step = 10., format = '%.0f', key = 'height')
 
-    sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
+    sb.markdown(side_border, unsafe_allow_html=True)   #  구분선
     sb.write(h4, ':green[✤ Material Properties]')
     col = sb.columns(2, gap = 'medium')
     with col[0]:
@@ -57,9 +64,10 @@ def Sidebar(h4, h5):
         In.Es = st.number_input(h5 + r'￭ $\bm{{\small{{E_{s}}} }}$ [GPa]', min_value = 10., value = 200., step = 10., format = '%.1f', key = 'Es') * 1e3
         In.Ef = st.number_input(h5 + r'￭ $\bm{{\small{{E_{f}}} }}$ [GPa]', min_value = 10., value = 120., step = 10., format = '%.1f', key = 'Ef') * 1e3
     
-    sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
-    sb.write(h4, ':red[✤ Reinforcement in Tension (인장 보강)]')
-    In.Layer = sb.radio('숨김', ('Single Layer', 'Double Layer'), horizontal=True, label_visibility='collapsed', captions=['','보강재의 개수 : 짝수'], index=1, key = 'Layer')    
+    sb.markdown(side_border, unsafe_allow_html=True)   #  구분선
+    sb.write(h4, ':red[✤ Reinforcement in Tension (인장 보강)]')    
+    In.Layer = sb.radio('숨김', ('Single Layer', 'Double Layer [보강재의 개수 : 짝수]'), horizontal=True, label_visibility='collapsed', index=1, key = 'Layer')
+    
     col = sb.columns(2, gap = 'medium')
     with col[0]:
         In.depth = st.number_input(h5 + r'￭ $\bm{{\small{{ d}} }}$ (인장철근 도심) [mm]', min_value = 10., value = 520., step = 10., format = '%.0f', key = 'depth')
@@ -77,7 +85,7 @@ def Sidebar(h4, h5):
 
     In.depth1 = 0;  In.As1 = 0;  In.Af1 = 0
     if 'Doubl' in In.Type:
-        sb.markdown(border, unsafe_allow_html=True)   ## 빈줄 공간
+        sb.markdown(side_border, unsafe_allow_html=True)   #  구분선
         sb.write(h4, ':blue[✤ Reinforcement in Compression (압축 보강)]')
         col = sb.columns(2, gap = 'medium')
         with col[0]:
